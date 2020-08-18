@@ -265,6 +265,8 @@ GameObject:
   m_Component:
   - component: {fileID: 528824274}
   - component: {fileID: 528824275}
+  - component: {fileID: 528824276}
+  - component: {fileID: 528824277}
   m_Layer: 0
   m_Name: Game Controller
   m_TagString: Untagged
@@ -298,8 +300,40 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 98afbf6a5bb2bfc438e6b7318ed91623, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cube: {fileID: 5430075271570860226, guid: 76f5c3c67d343924e87813b9f62db9d1, type: 3}
-  materials:
+  speed: 50
+  touch_ctrl: {fileID: 305178644}
+  boundary:
+    min_x: -7.2
+    max_x: 7.2
+    min_z: -17
+    max_z: 17
+--- !u!114 &528824276
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 528824273}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0bcc33bdf0ee5ae428b7077eb6d793eb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  object_to_pool: {fileID: 5430075271570860226, guid: 76f5c3c67d343924e87813b9f62db9d1, type: 3}
+  amount_to_pool: 32
+--- !u!114 &528824277
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 528824273}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a11fa87037359cd47957dec20ab8e30a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mat_prefabs:
   - {fileID: 2100000, guid: 94814b9f73b793d4696ab51825e96b18, type: 2}
   - {fileID: 2100000, guid: 11668d95d8ef80e47800e84c67f189b6, type: 2}
   - {fileID: 2100000, guid: f02211b4ac2d84940bc453d00fc3c69f, type: 2}
@@ -311,13 +345,6 @@ MonoBehaviour:
   - {fileID: 2100000, guid: 706f9248c853c994b8d924401352b9b5, type: 2}
   - {fileID: 2100000, guid: ba53c25efdc07ba429939042fb5aaec4, type: 2}
   - {fileID: 2100000, guid: cf815fdbde6b8614b9d451f9e00e70d5, type: 2}
-  speed: 50
-  touch_ctrl: {fileID: 305178644}
-  boundary:
-    min_x: -7.2
-    max_x: 7.2
-    min_z: -17
-    max_z: 17
 --- !u!1 &561448664
 GameObject:
   m_ObjectHideFlags: 0
