@@ -1,18 +1,17 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public class MoveCube
-{
-    public Rigidbody rb;
-    public Vector3 destination;
-}
-
 public class CubeManager : MonoBehaviour
 {
     class Cube
     {
         public GameObject cube;
         public int point;
+    }
+    class CubeLocation
+    {
+        public Cube cube;
+        public int offset;
     }
     class Location
     {
@@ -47,21 +46,21 @@ public class CubeManager : MonoBehaviour
     {
         all_locations = new Location[32] {
             new Location(new Vector2(cube_pos.x1, cube_pos.z8)), new Location(new Vector2(cube_pos.x2, cube_pos.z8)),
-            new Location(new Vector2(cube_pos.x3, cube_pos.z8)), new Location(new Vector2(cube_pos.x3, cube_pos.z8)),
+            new Location(new Vector2(cube_pos.x3, cube_pos.z8)), new Location(new Vector2(cube_pos.x4, cube_pos.z8)),
             new Location(new Vector2(cube_pos.x1, cube_pos.z7)), new Location(new Vector2(cube_pos.x2, cube_pos.z7)),
-            new Location(new Vector2(cube_pos.x3, cube_pos.z7)), new Location(new Vector2(cube_pos.x3, cube_pos.z7)),
+            new Location(new Vector2(cube_pos.x3, cube_pos.z7)), new Location(new Vector2(cube_pos.x4, cube_pos.z7)),
             new Location(new Vector2(cube_pos.x1, cube_pos.z6)), new Location(new Vector2(cube_pos.x2, cube_pos.z6)),
-            new Location(new Vector2(cube_pos.x3, cube_pos.z6)), new Location(new Vector2(cube_pos.x3, cube_pos.z6)),
+            new Location(new Vector2(cube_pos.x3, cube_pos.z6)), new Location(new Vector2(cube_pos.x4, cube_pos.z6)),
             new Location(new Vector2(cube_pos.x1, cube_pos.z5)), new Location(new Vector2(cube_pos.x2, cube_pos.z5)),
-            new Location(new Vector2(cube_pos.x3, cube_pos.z5)), new Location(new Vector2(cube_pos.x3, cube_pos.z5)),
+            new Location(new Vector2(cube_pos.x3, cube_pos.z5)), new Location(new Vector2(cube_pos.x4, cube_pos.z5)),
             new Location(new Vector2(cube_pos.x1, cube_pos.z4)), new Location(new Vector2(cube_pos.x2, cube_pos.z4)),
-            new Location(new Vector2(cube_pos.x3, cube_pos.z4)), new Location(new Vector2(cube_pos.x3, cube_pos.z4)),
+            new Location(new Vector2(cube_pos.x3, cube_pos.z4)), new Location(new Vector2(cube_pos.x4, cube_pos.z4)),
             new Location(new Vector2(cube_pos.x1, cube_pos.z3)), new Location(new Vector2(cube_pos.x2, cube_pos.z3)),
-            new Location(new Vector2(cube_pos.x3, cube_pos.z3)), new Location(new Vector2(cube_pos.x3, cube_pos.z3)),
+            new Location(new Vector2(cube_pos.x3, cube_pos.z3)), new Location(new Vector2(cube_pos.x4, cube_pos.z3)),
             new Location(new Vector2(cube_pos.x1, cube_pos.z2)), new Location(new Vector2(cube_pos.x2, cube_pos.z2)),
-            new Location(new Vector2(cube_pos.x3, cube_pos.z2)), new Location(new Vector2(cube_pos.x3, cube_pos.z2)),
+            new Location(new Vector2(cube_pos.x3, cube_pos.z2)), new Location(new Vector2(cube_pos.x4, cube_pos.z2)),
             new Location(new Vector2(cube_pos.x1, cube_pos.z1)), new Location(new Vector2(cube_pos.x2, cube_pos.z1)),
-            new Location(new Vector2(cube_pos.x3, cube_pos.z1)), new Location(new Vector2(cube_pos.x3, cube_pos.z1))
+            new Location(new Vector2(cube_pos.x3, cube_pos.z1)), new Location(new Vector2(cube_pos.x4, cube_pos.z1))
         };
     }
 
@@ -109,29 +108,112 @@ public class CubeManager : MonoBehaviour
     public List<MoveCube> get_destinations()
     {
         List<MoveCube> destinations = new List<MoveCube>();
-        if(last_direction == Direction.Down)
+        List<CubeLocation> all_cubes = new List<CubeLocation>();
+        if (last_direction == Direction.Down)
         {
-            for(int i = 0; i < 4; i++)
+            for (int i = 0; i < 4; i++)
             {
-                List<Cube> column_cubes = new List<Cube>();
-                for(int j = 31 - i; j >= 0; j -= 4)
+                for (int j = 31 - i; j >= 0; j -= 4)
                 {
-                    if(all_locations[j].cube != null)
+                    find_all_cubes(i, j, all_cubes);
+                }
+            }
+            foreach (CubeLocation cbl in all_cubes)
+            {
+                for (int i = 31 - cbl.offset; i >= 0; i -= 4)
+                {
+                    if (all_locations[i].cube == null)
                     {
-                        column_cubes.Add(all_locations[j].cube);
-                        all_locations[j].cube = null;
+                        add_destinations(cbl, i, destinations);
+                        break;
                     }
                 }
-                for(int j = 0, k = 31 - i; j < column_cubes.Count; j++, k -= 4)
+            }
+        }
+        else if (last_direction == Direction.Up)
+        {
+            for (int i = 0; i < 4; i++)
+            {
+                for (int j = 0 + i; j < 32; j += 4)
                 {
-                    MoveCube m_cb = new MoveCube();
-                    m_cb.rb = column_cubes[j].cube.GetComponent<Rigidbody>();
-                    m_cb.destination = new Vector3(all_locations[k].location.x, 0.0f, all_locations[k].location.y);
-                    all_locations[k].cube = column_cubes[j];
-                    destinations.Add(m_cb);
+                    find_all_cubes(i, j, all_cubes);
+                }
+            }
+            foreach (CubeLocation cbl in all_cubes)
+            {
+                for (int i = 0 + cbl.offset; i < 32; i += 4)
+                {
+                    if (all_locations[i].cube == null)
+                    {
+                        add_destinations(cbl, i, destinations);
+                        break;
+                    }
+                }
+            }
+        }
+        else if (last_direction == Direction.Left)
+        {
+            for (int i = 0; i < 32; i += 4)
+            {
+                for (int j = 0 + i; j < 4 + i; j++)
+                {
+                    find_all_cubes(i, j, all_cubes);
+                }
+            }
+            foreach (CubeLocation cbl in all_cubes)
+            {
+                for (int i = 0 + cbl.offset; i < 4 + cbl.offset; i++)
+                {
+                    if (all_locations[i].cube == null)
+                    {
+                        add_destinations(cbl, i, destinations);
+                        break;
+                    }
+                }
+            }
+        }
+        else if (last_direction == Direction.Right)
+        {
+            for (int i = 0; i < 32; i += 4)
+            {
+                for (int j = 3 + i; j >= 0 + i; j--)
+                {
+                    find_all_cubes(i, j, all_cubes);
+                }
+            }
+            foreach (CubeLocation cbl in all_cubes)
+            {
+                for (int i = 3 + cbl.offset; i >= 0 + cbl.offset; i--)
+                {
+                    if (all_locations[i].cube == null)
+                    {
+                        add_destinations(cbl, i, destinations);
+                        break;
+                    }
                 }
             }
         }
         return destinations;
+    }
+
+    void find_all_cubes(int i, int j, List<CubeLocation> all_cubes)
+    {
+        if (all_locations[j].cube != null)
+        {
+            CubeLocation cbl = new CubeLocation();
+            cbl.cube = all_locations[j].cube;
+            cbl.offset = i;
+            all_cubes.Add(cbl);
+            all_locations[j].cube = null;
+        }
+    }
+
+    void add_destinations(CubeLocation cbl, int i, List<MoveCube> destinations)
+    {
+        all_locations[i].cube = cbl.cube;
+        MoveCube mcb = new MoveCube();
+        mcb.rb = cbl.cube.cube.GetComponent<Rigidbody>();
+        mcb.destination = new Vector3(all_locations[i].location.x, 0.0f, all_locations[i].location.y);
+        destinations.Add(mcb);
     }
 }

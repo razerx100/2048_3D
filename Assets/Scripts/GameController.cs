@@ -3,8 +3,6 @@ using UnityEngine;
 
 public class GameController : MonoBehaviour
 {
-    public List<bool> is_moving;
-
     public float speed;
 
     public TouchController touch_ctrl;
@@ -23,7 +21,6 @@ public class GameController : MonoBehaviour
     private void Awake()
     {
         cubes_moving = false;
-        is_moving = new List<bool>();
     }
 
     private void Start()
@@ -36,41 +33,31 @@ public class GameController : MonoBehaviour
     {
         last_dir = touch_ctrl.get_direction();
         cb_mngr.last_direction = last_dir;
-        control_cube();
+        control_cubes();
     }
 
-    void control_cube()
+    void control_cubes()
     {
         if (last_dir != Direction.None && !cubes_moving)
         {
             cubes_destination = cb_mngr.get_destinations();
-            is_moving = new List<bool>();
-            foreach (MoveCube m_cb in cubes_destination)
-            {
-                is_moving.Add(true);
-            }
             cubes_moving = true;
         }
         for(int i = 0; i < cubes_destination.Count; i++)
         {
-            Debug.Log(cubes_destination[i].destination);
             cubes_destination[i].rb.transform.position = Vector3.MoveTowards(cubes_destination[i].rb.transform.position, cubes_destination[i].destination, Time.fixedDeltaTime * speed);
-            if(cubes_destination[i].rb.transform.position == cubes_destination[i].destination)
-            {
-                is_moving[i] = false;
-            }
         }
         if (cubes_moving)
         {
-            bool cbs_moving = true;
-            foreach (bool cb in is_moving)
+            cubes_moving = false;
+            foreach(MoveCube mcb in cubes_destination)
             {
-                if (cb)
+                if(!Mathf.Approximately(mcb.rb.velocity.x, 0.0f) || !Mathf.Approximately(mcb.rb.velocity.z, 0.0f))
                 {
-                    cbs_moving = false;
+                    cubes_moving = true;
+                    break;
                 }
             }
-            cubes_moving = cbs_moving;
         }
         foreach (MoveCube cb in cubes_destination)
         {

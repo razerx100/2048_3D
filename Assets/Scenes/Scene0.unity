@@ -165,7 +165,6 @@ GameObject:
   - component: {fileID: 305178640}
   - component: {fileID: 305178642}
   - component: {fileID: 305178641}
-  - component: {fileID: 305178643}
   - component: {fileID: 305178644}
   m_Layer: 5
   m_Name: Touch Area
@@ -231,18 +230,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 305178639}
   m_CullTransparentMesh: 0
---- !u!114 &305178643
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 305178639}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4f0d7891e1f114247b5c530ad1e06486, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &305178644
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -307,6 +294,7 @@ MonoBehaviour:
     max_x: 7.2
     min_z: -17
     max_z: 17
+  last_dir: 0
 --- !u!114 &528824276
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -333,6 +321,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a11fa87037359cd47957dec20ab8e30a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  last_direction: 0
   mat_prefabs:
   - {fileID: 2100000, guid: 94814b9f73b793d4696ab51825e96b18, type: 2}
   - {fileID: 2100000, guid: 11668d95d8ef80e47800e84c67f189b6, type: 2}

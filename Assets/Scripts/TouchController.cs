@@ -1,11 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.EventSystems;
 
-public enum Direction
-{
-    Up, Down, Left, Right, None
-}
-
 public class TouchController : MonoBehaviour, IPointerDownHandler, IDragHandler, IPointerUpHandler
 {
     Vector2 origin, direction;
