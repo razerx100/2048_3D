@@ -29,6 +29,7 @@ public class CubeManager : MonoBehaviour
 
     public Material[] mat_prefabs;
     Dictionary<int, Material> materials;
+    List<Vector2> previous_location;
 
     int total_cube, score;
 
@@ -37,6 +38,7 @@ public class CubeManager : MonoBehaviour
     private void Awake()
     {
         materials = new Dictionary<int, Material>();
+        previous_location = new List<Vector2>();
         score = 0;
     }
 
@@ -73,7 +75,7 @@ public class CubeManager : MonoBehaviour
 
     void organize_materials()
     {
-        for(int i = 0, j = 2; i < 11; i++, j *= 2)
+        for(int i = 0, j = 2; i < mat_prefabs.Length; i++, j *= 2)
         {
             materials[j] = mat_prefabs[i];
         }
@@ -103,7 +105,7 @@ public class CubeManager : MonoBehaviour
 
     void add_score(int scoree)
     {
-        score += scoree;
+        score += scoree / 2;
         score_text.text = "Score : " + score;
     }
 
@@ -209,6 +211,11 @@ public class CubeManager : MonoBehaviour
                 }
             }
         }
+        previous_location = new List<Vector2>();
+        foreach(MoveCube mbc in destinations)
+        {
+            previous_location.Add(new Vector2(mbc.rb.position.x, mbc.rb.position.z));
+        }
         return destinations;
     }
 
@@ -241,27 +248,51 @@ public class CubeManager : MonoBehaviour
     public bool is_moveable()
     {
         bool flag = false;
-        for(int i = 1; i < 3; i++)
+        for(int i = 0; i < 4; i++)
         {
-            for(int j = 5; j < 28; j += 4)
+            for(int j = 0 + i; j < 28; j += 4)
             {
-                bool condition = (all_locations[j].cube.point == all_locations[j + 1].cube.point) ||
-                    (all_locations[j].cube.point == all_locations[j - 1].cube.point) ||
-                    (all_locations[j].cube.point == all_locations[j - 4].cube.point) ||
-                    (all_locations[j].cube.point == all_locations[j + 4].cube.point);
-                if (condition)
+                if (all_locations[j].cube.point == all_locations[j + 4].cube.point)
                 {
                     flag = true;
                     break;
                 }
             }
         }
+        if (!flag)
+        {
+            for (int i = 0; i < 32; i += 4)
+            {
+                for(int j = 0 + i; j < 3 + i; j++)
+                {
+                    if (all_locations[j].cube.point == all_locations[j + 1].cube.point)
+                    {
+                        flag = true;
+                        break;
+                    }
+                }
+            }
+        }
         return flag;
     }
 
-    public bool has_moved()
+    public bool has_moved(List<MoveCube> current_location)
     {
-        return true;
+        bool moved = false;
+        for(int i = 0; i < current_location.Count; i++)
+        {
+            bool condition = !Mathf.Approximately(
+                current_location[i].rb.position.x, previous_location[i].x)
+                ||
+                !Mathf.Approximately(
+                    current_location[i].rb.position.z, previous_location[i].y);
+            if (condition)
+            {
+                moved = true;
+                break;
+            }
+        }
+        return moved;
     }
 
     public void merge_cubes()

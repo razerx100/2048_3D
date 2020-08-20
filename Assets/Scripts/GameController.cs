@@ -69,10 +69,12 @@ public class GameController : MonoBehaviour
             }
             if (!cubes_moving)
             {
-                cubes_destination = new List<MoveCube>();
                 if (cb_mngr.cube_number() < 32)
                 {
-                    cb_mngr.spawn_cube();
+                    if (cb_mngr.has_moved(cubes_destination))
+                    {
+                        cb_mngr.spawn_cube();
+                    }
                 }
                 else
                 {
@@ -84,6 +86,7 @@ public class GameController : MonoBehaviour
                         game_running = false;
                     }
                 }
+                cubes_destination = new List<MoveCube>();
                 cb_mngr.merge_cubes();
             }
         }
