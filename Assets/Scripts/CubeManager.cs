@@ -79,8 +79,10 @@ public class CubeManager : MonoBehaviour
         }
     }
 
-    public void spawn_cube(int number = 2)
+    public void spawn_cube()
     {
+        int[] choice = { 2, 4 };
+        int number = choice[Random.Range(0, 2)];
         GameObject cube = CubePool.shared_instance.get_pooled_object();
         cube.SetActive(true);
         int random_position = get_random_position();
@@ -234,6 +236,32 @@ public class CubeManager : MonoBehaviour
     public int cube_number()
     {
         return total_cube;
+    }
+
+    public bool is_moveable()
+    {
+        bool flag = false;
+        for(int i = 1; i < 3; i++)
+        {
+            for(int j = 5; j < 28; j += 4)
+            {
+                bool condition = (all_locations[j].cube.point == all_locations[j + 1].cube.point) ||
+                    (all_locations[j].cube.point == all_locations[j - 1].cube.point) ||
+                    (all_locations[j].cube.point == all_locations[j - 4].cube.point) ||
+                    (all_locations[j].cube.point == all_locations[j + 4].cube.point);
+                if (condition)
+                {
+                    flag = true;
+                    break;
+                }
+            }
+        }
+        return flag;
+    }
+
+    public bool has_moved()
+    {
+        return true;
     }
 
     public void merge_cubes()

@@ -69,20 +69,22 @@ public class GameController : MonoBehaviour
             }
             if (!cubes_moving)
             {
+                cubes_destination = new List<MoveCube>();
                 if (cb_mngr.cube_number() < 32)
                 {
-                    cubes_destination = new List<MoveCube>();
-                    cb_mngr.merge_cubes();
                     cb_mngr.spawn_cube();
                 }
                 else
                 {
-                    game_over_text.text = "Game over!";
-                    restart_button.SetActive(true);
-                    quit_button.SetActive(true);
-                    pause_button.SetActive(false);
-                    game_running = false;
+                    if (!cb_mngr.is_moveable()) {
+                        game_over_text.text = "Game over!";
+                        restart_button.SetActive(true);
+                        quit_button.SetActive(true);
+                        pause_button.SetActive(false);
+                        game_running = false;
+                    }
                 }
+                cb_mngr.merge_cubes();
             }
         }
         foreach (MoveCube cb in cubes_destination)
